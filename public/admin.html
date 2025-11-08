@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — E-Waste Management</title>
+  <link rel="stylesheet" href="/styles.css" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="recycle-icon.png" type="image/png">
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="container nav-content">
+      <h1 class="logo">🛠️ Admin Dashboard</h1>
+      <nav>
+        <a class="admin-link" href="/">🏠 Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card fade-in">
+      <h2>All Pickup Requests</h2>
+      <p class="subtitle">Monitor all user submissions and track collection progress.</p>
+      <div id="allRequests" class="request-list admin-list">
+        <!-- Dynamic content from main.js -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 E-Waste Management | Admin Panel</p>
+  </footer>
+
+  <script>
+    // Minimal access protection
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("token") !== "admin") {
+      document.body.innerHTML = `
+        <div style="text-align:center; padding:40px; font-family:Inter, sans-serif;">
+          <h2>🔒 Unauthorized Access</h2>
+          <p>Please add <code>?token=admin</code> to the URL to access the dashboard in local mode.</p>
+          <a href="/" style="color:#2a7d4f; text-decoration:none; font-weight:600;">← Go Back Home</a>
+        </div>`;
+    }
+  </script>
+
+  <script src="/main.js"></script>
+</body>
+</html>

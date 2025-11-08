@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>E-Waste Management</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="recycle-icon.png" type="image/png">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-content">
+      <h1 class="logo">♻️ E-Waste Pickup</h1>
+      <nav>
+        <a class="admin-link" href="/admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="intro card fade-in">
+      <h2>Recycle Responsibly</h2>
+      <p>Schedule a pickup for your e-waste or plastic items and help keep our planet clean and sustainable.</p>
+    </section>
+
+    <section class="form card fade-in">
+      <h2>Request a Pickup</h2>
+      <form id="pickupForm" autocomplete="off">
+        <div class="form-grid">
+          <input id="name" type="text" placeholder="Your Name" required />
+          <input id="phone" type="tel" placeholder="Phone Number" required />
+          <input id="address" type="text" placeholder="Pickup Address" required />
+          <input id="device" type="text" placeholder="Device / Plastic Type (e.g. Laptop, Phone, Milk Packet)" required />
+          <input id="quantity" type="number" min="1" value="1" placeholder="Quantity" required />
+          <input id="date" type="date" required />
+        </div>
+        <button id="reqBtn" type="submit" class="btn-primary">Send Request</button>
+      </form>
+    </section>
+
+    <section class="requests card fade-in">
+      <h2>Your Requests</h2>
+      <div id="requests" class="request-list">
+        <!-- Requests will be dynamically injected here -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 E-Waste Management | Made with ♻️ for a cleaner future</p>
+  </footer>
+
+  <script src="/main.js"></script>
+</body>
+</html>
