@@ -177,30 +177,38 @@
   </div>
 
   <main class="container">
-    <section class="card fade-in">
-      <h2>All Pickup Requests</h2>
-      <p class="subtitle">Monitor all user submissions and track collection progress.</p>
+  <!-- Admin Banner -->
+  <section class="admin-banner card fade-in">
+    <img src="https://cdn.pixabay.com/photo/2016/11/22/22/18/recycling-1851229_1280.jpg" alt="Recycling Banner">
+    <h1>♻️ Manage E-Waste Requests</h1>
+  </section>
 
-      <div id="allRequests" class="request-list admin-list">
-        <!-- Sample placeholder items -->
-        <div class="request-item">
-          <img src="https://cdn-icons-png.flaticon.com/512/2920/2920322.png" alt="E-waste">
-          <div class="request-info">
-            <h4>John Doe</h4>
-            <p>📍 Delhi | 📅 2025-11-10 | 🧾 Pending</p>
-          </div>
-        </div>
+  <!-- Stats Section -->
+  <section class="stats">
+    <div class="stat-card">
+      <h3>Total Requests</h3>
+      <p id="totalCount">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>Pending</h3>
+      <p id="pendingCount">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>Completed</h3>
+      <p id="completedCount">0</p>
+    </div>
+  </section>
 
-        <div class="request-item">
-          <img src="https://cdn-icons-png.flaticon.com/512/3039/3039382.png" alt="E-waste">
-          <div class="request-info">
-            <h4>Priya Sharma</h4>
-            <p>📍 Mumbai | 📅 2025-11-09 | ✅ Collected</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+  <!-- Requests Section -->
+  <section class="card fade-in">
+    <h2>All Pickup Requests</h2>
+    <p class="subtitle">Monitor all user submissions and track collection progress.</p>
+    <div id="allRequests" class="request-list admin-list">
+      <!-- Dynamic content inserted by main.js -->
+    </div>
+  </section>
+</main>
+
 
   <footer class="footer">
     <p>© 2025 E-Waste Management | Admin Panel</p>
@@ -222,3 +230,4 @@
   <script src="/main.js"></script>
 </body>
 </html>
+
