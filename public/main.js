@@ -1,4 +1,4 @@
-// 🌍 Helper: Fetch wrapper
+// 🌍 Helper: Fetch wrapper with error handling
 const api = async (path, opts = {}) => {
   const res = await fetch(path, opts);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -7,14 +7,28 @@ const api = async (path, opts = {}) => {
 
 // 🧹 Helper: Escape HTML
 const escapeHtml = s =>
-  s
-    ? s.replaceAll('&', '&amp;')
+  s ? s.replaceAll('&', '&amp;')
        .replaceAll('<', '&lt;')
        .replaceAll('>', '&gt;')
     : '';
 
+// 🌟 Helper: Toast Notification
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 100);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 500);
+  }, 3000);
+}
+
 // 🧾 Send new pickup request
-async function sendRequest() {
+async function sendRequest(e) {
+  e.preventDefault();
+
   const payload = {
     name: document.getElementById('name').value.trim(),
     phone: document.getElementById('phone').value.trim(),
@@ -24,28 +38,27 @@ async function sendRequest() {
     date: document.getElementById('date').value || null,
   };
 
-  if (!payload.name || !payload.phone || !payload.address) {
-    return alert('⚠️ Name, phone, and address are required.');
-  }
+  if (!payload.name || !payload.phone || !payload.address)
+    return showToast('⚠️ Name, phone, and address are required.', 'error');
+
+  const btn = document.getElementById('reqBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
 
   try {
-    const btn = document.getElementById('reqBtn');
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
-
     await fetch('/api/requests', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
 
-    alert('✅ Request submitted successfully!');
+    showToast('✅ Request submitted successfully!');
+    document.getElementById('pickupForm').reset();
     loadUserRequests();
   } catch (err) {
     console.error(err);
-    alert('❌ Failed to submit request. Please try again.');
+    showToast('❌ Failed to submit request. Please try again.', 'error');
   } finally {
-    const btn = document.getElementById('reqBtn');
     btn.disabled = false;
     btn.textContent = 'Send Request';
   }
@@ -57,6 +70,7 @@ async function handleAdminClick(e) {
     const id = e.target.dataset.id;
     if (!confirm('Delete this request?')) return;
     await fetch(`/api/requests/${id}`, { method: 'DELETE' });
+    showToast('🗑 Request deleted.');
     loadAdmin();
   }
 }
@@ -71,6 +85,7 @@ async function handleStatusChange(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
     });
+    showToast(`Status updated to "${status}"`);
   }
 }
 
@@ -78,7 +93,7 @@ async function handleStatusChange(e) {
 async function loadUserRequests() {
   const container = document.getElementById('requests');
   if (!container) return;
-  container.innerHTML = '<p>Loading your requests...</p>';
+  container.innerHTML = `<div class="loader"></div>`;
 
   try {
     const data = await api('/api/requests');
@@ -92,11 +107,18 @@ async function loadUserRequests() {
       const el = document.createElement('div');
       el.className = 'request-card';
       el.innerHTML = `
-        <h3>${escapeHtml(req.device)}</h3>
-        <p><strong>Quantity:</strong> ${req.quantity}</p>
-        <p><strong>Date:</strong> ${req.date || 'N/A'}</p>
-        <p><strong>Status:</strong> <span class="status-label ${req.status || 'pending'}">${req.status || 'Pending'}</span></p>
-      `;
+        <img src="/images/${req.device?.toLowerCase().includes('plastic') ? 'plastic.png' : 'ewaste.png'}" 
+             alt="item" class="req-img">
+        <div class="req-details">
+          <h3>${escapeHtml(req.device)}</h3>
+          <p><strong>Quantity:</strong> ${req.quantity}</p>
+          <p><strong>Date:</strong> ${req.date || 'N/A'}</p>
+          <p><strong>Status:</strong> 
+             <span class="status-label ${req.status || 'pending'}">
+               ${req.status || 'Pending'}
+             </span>
+          </p>
+        </div>`;
       container.appendChild(el);
     });
   } catch (err) {
@@ -104,11 +126,11 @@ async function loadUserRequests() {
   }
 }
 
-// 🧭 Load all requests (admin view)
+// 🧭 Load all requests (admin)
 async function loadAdmin() {
   const container = document.getElementById('allRequests');
   if (!container) return;
-  container.innerHTML = '<p>Loading all requests...</p>';
+  container.innerHTML = `<div class="loader"></div>`;
 
   try {
     const data = await api('/api/requests');
@@ -144,7 +166,7 @@ async function loadAdmin() {
 // 🚀 Initialize on DOM load
 window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('reqBtn')) {
-    document.getElementById('reqBtn').addEventListener('click', sendRequest);
+    document.getElementById('pickupForm').addEventListener('submit', sendRequest);
     loadUserRequests();
   }
 
@@ -152,6 +174,6 @@ window.addEventListener('DOMContentLoaded', () => {
     loadAdmin();
     document.getElementById('allRequests').addEventListener('click', handleAdminClick);
     document.getElementById('allRequests').addEventListener('change', handleStatusChange);
-    setInterval(loadAdmin, 8000); // Live refresh
+    setInterval(loadAdmin, 8000); // auto-refresh
   }
 });
