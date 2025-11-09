@@ -4,15 +4,195 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>E-Waste Management</title>
-  <link rel="stylesheet" href="styles.css" />
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- Favicon -->
   <link rel="icon" href="recycle-icon.png" type="image/png">
+
+  <style>
+    /* ---------- Base ---------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f8f6;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container { width: 90%; max-width: 1100px; margin: 0 auto; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ---------- Navbar ---------- */
+    .navbar {
+      background: #2a7d4f;
+      color: #fff;
+      padding: 1rem 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-content {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .logo { font-weight: 700; font-size: 1.6rem; }
+    .admin-link {
+      background: #fff; color: #2a7d4f;
+      font-weight: 600; padding: 0.5rem 1rem;
+      border-radius: 8px; transition: 0.3s;
+    }
+    .admin-link:hover { background: #e0f3e7; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      background: url('https://images.unsplash.com/photo-1590402494745-9a4d1b02a0d8?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      height: 300px; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      color: #fff; text-align: center; text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      padding: 1rem;
+    }
+    .hero h2 {
+      font-size: 2.2rem; background: rgba(0,0,0,0.4);
+      padding: 0.5rem 1.2rem; border-radius: 10px; margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-size: 1.1rem; max-width: 600px; background: rgba(0,0,0,0.3);
+      padding: 0.5rem 1rem; border-radius: 8px;
+    }
+
+    /* ---------- Cards ---------- */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      animation: fadeIn 0.8s ease;
+    }
+    .card h2 { color: #2a7d4f; margin-bottom: 0.5rem; }
+    .card p { color: #555; margin-bottom: 1.5rem; }
+
+    /* ---------- Form ---------- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    input {
+      padding: 0.75rem; border: 1px solid #ccc; border-radius: 8px;
+      font-size: 1rem; outline: none; transition: 0.2s;
+    }
+    input:focus {
+      border-color: #2a7d4f;
+      box-shadow: 0 0 0 3px rgba(42, 125, 79, 0.2);
+    }
+    .btn-primary {
+      background: #2a7d4f; color: #fff; border: none;
+      padding: 0.9rem 1.5rem; font-size: 1rem; font-weight: 600;
+      border-radius: 10px; cursor: pointer; transition: background 0.3s ease;
+    }
+    .btn-primary:hover { background: #256f45; }
+
+    /* ---------- Requests ---------- */
+    .request-list {
+      display: grid; gap: 1rem; margin-top: 1rem;
+    }
+    .request-item {
+      background: #f0f9f3; border-radius: 12px; padding: 1rem;
+      display: flex; align-items: center; gap: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .request-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .request-item img {
+      width: 60px; height: 60px; object-fit: cover; border-radius: 10px;
+    }
+    .request-info h4 { color: #2a7d4f; margin-bottom: 0.3rem; }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      background: #2a7d4f;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+
+    /* ---------- Success Popup ---------- */
+    .success-popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex; justify-content: center; align-items: center;
+      background: rgba(0,0,0,0.4);
+      visibility: hidden; opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s;
+      z-index: 200;
+    }
+    .success-popup.active {
+      visibility: visible; opacity: 1;
+    }
+    .popup-content {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: scaleIn 0.4s ease;
+    }
+    .popup-content h3 {
+      color: #2a7d4f;
+      margin-top: 1rem;
+    }
+    .checkmark {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      border: 4px solid #2a7d4f;
+      display: flex; justify-content: center; align-items: center;
+      margin: 0 auto;
+      position: relative;
+      animation: pop 0.3s ease-out;
+    }
+    .checkmark::after {
+      content: '✓';
+      color: #2a7d4f;
+      font-size: 2.5rem;
+      font-weight: 700;
+      position: absolute;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pop {
+      0% { transform: scale(0); }
+      80% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    @keyframes scaleIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .hero h2 { font-size: 1.6rem; }
+      .hero p { font-size: 1rem; }
+      .popup-content { padding: 1.5rem; }
+    }
+  </style>
 </head>
+
 <body>
+  <!-- Navbar -->
   <header class="navbar">
     <div class="container nav-content">
       <h1 class="logo">♻️ E-Waste Pickup</h1>
@@ -22,12 +202,25 @@
     </div>
   </header>
 
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Recycle Responsibly 🌍</h2>
+    <p>Join hands to reduce e-waste and protect our environment — one pickup at a time.</p>
+  </section>
+
+  <!-- Main Content -->
   <main class="container">
+    <!-- Intro Card -->
     <section class="intro card fade-in">
-      <h2>Recycle Responsibly</h2>
-      <p>Schedule a pickup for your e-waste or plastic items and help keep our planet clean and sustainable.</p>
+      <h2>♻️ Why Recycle E-Waste?</h2>
+      <p>
+        E-waste contains valuable materials and toxic components that shouldn’t end up in landfills. 
+        By recycling, you not only recover useful resources but also reduce pollution and health hazards.
+      </p>
+      <img src="https://cdn-icons-png.flaticon.com/512/4275/4275541.png" alt="E-waste illustration" style="width:120px; display:block; margin:1rem auto;">
     </section>
 
+    <!-- Form Section -->
     <section class="form card fade-in">
       <h2>Request a Pickup</h2>
       <form id="pickupForm" autocomplete="off">
@@ -39,22 +232,67 @@
           <input id="quantity" type="number" min="1" value="1" placeholder="Quantity" required />
           <input id="date" type="date" required />
         </div>
-        <button id="reqBtn" type="submit" class="btn-primary">Send Request</button>
+        <button id="reqBtn" type="submit" class="btn-primary">📦 Send Request</button>
       </form>
     </section>
 
+    <!-- Requests Section -->
     <section class="requests card fade-in">
       <h2>Your Requests</h2>
       <div id="requests" class="request-list">
-        <!-- Requests will be dynamically injected here -->
+        <div class="request-item">
+          <img src="https://cdn-icons-png.flaticon.com/512/3081/3081874.png" alt="E-waste">
+          <div class="request-info">
+            <h4>John Doe</h4>
+            <p>📍 Delhi | 💻 Laptop | 📅 2025-11-10 | 🧾 Pending</p>
+          </div>
+        </div>
+
+        <div class="request-item">
+          <img src="https://cdn-icons-png.flaticon.com/512/3039/3039382.png" alt="Plastic">
+          <div class="request-info">
+            <h4>Priya Sharma</h4>
+            <p>📍 Mumbai | 🧴 Plastic Bottles | 📅 2025-11-09 | ✅ Collected</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- Footer -->
   <footer class="footer">
     <p>© 2025 E-Waste Management | Made with ♻️ for a cleaner future</p>
   </footer>
 
-  <script src="/main.js"></script>
+  <!-- Success Popup -->
+  <div class="success-popup" id="successPopup">
+    <div class="popup-content">
+      <div class="checkmark"></div>
+      <h3>Request Submitted Successfully!</h3>
+      <p>Thank you for contributing to a cleaner planet 🌱</p>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    const form = document.getElementById('pickupForm');
+    const popup = document.getElementById('successPopup');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Simulate submission
+      popup.classList.add('active');
+
+      // Close popup automatically after 2 seconds
+      setTimeout(() => popup.classList.remove('active'), 2000);
+
+      // Optionally reset form
+      form.reset();
+    });
+
+    // Allow manual closing if user clicks outside
+    popup.addEventListener('click', () => popup.classList.remove('active'));
+  </script>
 </body>
 </html>
