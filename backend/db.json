@@ -2,25 +2,25 @@
   "requests": [
     {
       "id": "prKjJCP9bjASFYsLwDd2s",
-      "name": "manish kumar",
-      "phone": "07739230783",
-      "address": "vel road morai avadi",
-      "device": "unknown",
+      "name": "Manish Kumar",
+      "phone": "+91-7739230783",
+      "address": "Vel Road, Morai, Avadi",
+      "device": "Unknown Device",
       "quantity": 1,
       "date": null,
-      "status": "pending",
-      "createdAt": 1762588620789
+      "status": "Pending",
+      "createdAt": "2025-11-09T18:17:00Z"
     },
     {
       "id": "KMrPjcrPsET8Tm1SUutQg",
-      "name": "manish kumar",
-      "phone": "07739230783",
-      "address": "vel road morai avadi",
-      "device": "unknown",
+      "name": "Manish Kumar",
+      "phone": "+91-7739230783",
+      "address": "Vel Road, Morai, Avadi",
+      "device": "Unknown Device",
       "quantity": 1,
       "date": null,
-      "status": "pending",
-      "createdAt": 1762588553450
+      "status": "Pending",
+      "createdAt": "2025-11-09T18:15:53Z"
     }
   ]
 }
