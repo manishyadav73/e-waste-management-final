@@ -3,7 +3,17 @@ const api = async (path, opts = {}) => {
   const res = await fetch(path, opts);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
-};
+};// 📊 Helper: Update Admin Stats
+function updateStats(data) {
+  const total = data.length || 0;
+  const pending = data.filter(r => (r.status || '').toLowerCase() === 'pending').length;
+  const completed = data.filter(r => (r.status || '').toLowerCase() === 'completed').length;
+
+  if (document.getElementById('totalCount')) document.getElementById('totalCount').textContent = total;
+  if (document.getElementById('pendingCount')) document.getElementById('pendingCount').textContent = pending;
+  if (document.getElementById('completedCount')) document.getElementById('completedCount').textContent = completed;
+}
+
 
 // 🧹 Helper: Escape HTML
 const escapeHtml = s =>
@@ -127,6 +137,7 @@ async function loadUserRequests() {
 }
 
 // 🧭 Load all requests (admin)
+// 🧭 Load all requests (admin dashboard)
 async function loadAdmin() {
   const container = document.getElementById('allRequests');
   if (!container) return;
@@ -134,6 +145,8 @@ async function loadAdmin() {
 
   try {
     const data = await api('/api/requests');
+    updateStats(data); // update counters
+
     if (!data.length) {
       container.innerHTML = '<p>No pickup requests yet.</p>';
       return;
@@ -143,25 +156,42 @@ async function loadAdmin() {
     data.forEach(req => {
       const el = document.createElement('div');
       el.className = 'request-card';
+
+      // select small icon dynamically
+      const imgSrc = req.device && /plastic/i.test(req.device)
+        ? 'https://cdn-icons-png.flaticon.com/512/3039/3039382.png'
+        : 'https://cdn-icons-png.flaticon.com/512/3081/3081874.png';
+
       el.innerHTML = `
-        <h3>${escapeHtml(req.name)} — ${escapeHtml(req.device)}</h3>
-        <p><strong>Phone:</strong> ${escapeHtml(req.phone)}</p>
-        <p><strong>Address:</strong> ${escapeHtml(req.address)}</p>
-        <p><strong>Quantity:</strong> ${req.quantity}</p>
-        <p><strong>Date:</strong> ${req.date || 'N/A'}</p>
-        <select class="status" data-id="${req.id}">
-          <option value="Pending" ${req.status === 'Pending' ? 'selected' : ''}>Pending</option>
-          <option value="In Progress" ${req.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-          <option value="Completed" ${req.status === 'Completed' ? 'selected' : ''}>Completed</option>
-        </select>
-        <button class="del" data-id="${req.id}">🗑 Delete</button>
-      `;
+        <img src="${imgSrc}" alt="item" class="req-img">
+        <div class="req-details">
+          <h3>${escapeHtml(req.name)} — ${escapeHtml(req.device || 'Unknown')}</h3>
+          <p><strong>Phone:</strong> ${escapeHtml(req.phone)}</p>
+          <p><strong>Address:</strong> ${escapeHtml(req.address)}</p>
+          <p><strong>Quantity:</strong> ${req.quantity}</p>
+          <p><strong>Date:</strong> ${req.date || 'N/A'}</p>
+          <p><strong>Status:</strong> 
+            <span class="status-label ${req.status ? req.status.toLowerCase() : 'pending'}">
+              ${req.status || 'Pending'}
+            </span>
+          </p>
+          <div style="margin-top:8px;">
+            <select class="status" data-id="${req.id}">
+              <option value="Pending" ${req.status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="In Progress" ${req.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+              <option value="Completed" ${req.status === 'Completed' ? 'selected' : ''}>Completed</option>
+            </select>
+            <button class="del" data-id="${req.id}">🗑 Delete</button>
+          </div>
+        </div>`;
       container.appendChild(el);
     });
   } catch (err) {
+    console.error(err);
     container.innerHTML = '<p style="color:red;">Failed to load requests.</p>';
   }
 }
+
 
 // 🚀 Initialize on DOM load
 window.addEventListener('DOMContentLoaded', () => {
@@ -177,3 +207,4 @@ window.addEventListener('DOMContentLoaded', () => {
     setInterval(loadAdmin, 8000); // auto-refresh
   }
 });
+
